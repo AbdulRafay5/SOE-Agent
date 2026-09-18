@@ -1,0 +1,1301 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SadaHisab — Autonomous B2B SEO & Title Studio</title>
+  
+  <!-- Typography: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            sada: {
+              green: '#00A86B',
+              greenHover: '#008f5a',
+              emerald: '#10B981',
+              mint: '#D1FAE5',
+              darkBg: '#080C15',
+              darkSurface: '#0E1626',
+              darkCard: '#131F35',
+              darkBorder: '#1E2D4A',
+              lightBg: '#F8FAFC',
+              lightSurface: '#FFFFFF',
+              lightCard: '#FFFFFF',
+              lightBorder: '#E2E8F0',
+              textDark: '#F8FAFC',
+              textMutedDark: '#94A3B8',
+              textLight: '#0F172A',
+              textMutedLight: '#64748B'
+            }
+          },
+          boxShadow: {
+            'sada': '0 4px 25px -2px rgba(0, 168, 107, 0.25)',
+            'sada-card': '0 10px 30px -5px rgba(15, 23, 42, 0.1)',
+            'sada-glow': '0 0 35px -5px rgba(0, 168, 107, 0.3)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- External Visual Libraries: Lucide Icons, Marked.js & Chart.js -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+
+    /* Article Typography */
+    .prose-rendered h1 { font-size: 1.95rem; font-weight: 800; margin-top: 1.6rem; margin-bottom: 0.85rem; color: #00A86B; letter-spacing: -0.025em; line-height: 1.25; }
+    .prose-rendered > h1 { display: block; color: #34D399; font-size: 2.15rem; font-weight: 800; line-height: 1.2; margin-top: 0; margin-bottom: 1.35rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(52, 211, 153, 0.35); }
+    .prose-rendered h2 { font-size: 1.4rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.65rem; border-bottom: 1.5px solid rgba(0, 168, 107, 0.25); padding-bottom: 0.45rem; color: #E2E8F0; }
+    .dark .prose-rendered h2 { color: #F1F5F9; }
+    .prose-rendered h3 { font-size: 1.18rem; font-weight: 600; margin-top: 1.4rem; margin-bottom: 0.4rem; color: #10B981; }
+    .prose-rendered p { margin-top: 0.9rem; margin-bottom: 0.9rem; line-height: 1.85; font-size: 0.96rem; }
+    .prose-rendered ul { list-style-type: disc; padding-left: 1.6rem; margin: 0.85rem 0; }
+    .prose-rendered li { margin: 0.4rem 0; line-height: 1.7; }
+    .prose-rendered a { color: #00A86B; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+    .prose-rendered code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; padding: 0.15rem 0.4rem; border-radius: 0.35rem; }
+    .dark .prose-rendered code { background-color: #1E293B; color: #6EE7B7; }
+    .light .prose-rendered code { background-color: #F1F5F9; color: #047857; }
+
+    /* Tables */
+    .prose-rendered table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem; }
+    .prose-rendered th { background: rgba(0, 168, 107, 0.12); padding: 0.65rem 0.9rem; border: 1px solid rgba(0, 168, 107, 0.3); font-weight: 700; text-align: left; }
+    .prose-rendered td { padding: 0.65rem 0.9rem; border: 1px solid rgba(255, 255, 255, 0.08); }
+
+    /* Media & Flowchart Display */
+    .prose-rendered img {
+      width: 100%;
+      max-height: 520px;
+      object-fit: cover;
+      background: #0B111E;
+      border-radius: 1rem;
+      margin: 1.75rem 0 0.5rem 0;
+      border: 1px solid rgba(0, 168, 107, 0.3);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25);
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="bg-sada-lightBg dark:bg-sada-darkBg text-sada-textLight dark:text-sada-textDark min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+  <!-- Safe Jinja Data Carrier for Flask backend -->
+  <script id="server-files-data" type="application/json">{% if files %}{{ files | tojson }}{% else %}[]{% endif %}</script>
+  <script id="server-keywords-data" type="application/json">{% if keywords %}{{ keywords | tojson }}{% else %}[]{% endif %}</script>
+
+  <!-- TOP SADA HISAB NAV -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-sada-darkSurface/90 border-b border-sada-lightBorder dark:border-sada-darkBorder px-4 lg:px-8 py-3.5 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sada-green to-emerald-400 flex items-center justify-center shadow-sada">
+          <i data-lucide="receipt" class="w-5 h-5 text-white font-bold"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Sada<span class="text-sada-green">Hisab</span></span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-sada-green border border-emerald-300 dark:border-emerald-800">
+              SEO Studio v5.2 ⚡
+            </span>
+          </div>
+          <p class="text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark font-medium">Pakistani Business ERP, POS & SEO Intelligence</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex items-center p-1 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-sada-lightBorder dark:border-sada-darkBorder text-xs font-semibold">
+        <button onclick="switchTab('studio')" id="tab-btn-studio" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-green bg-white dark:bg-sada-darkCard shadow-sm">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Content Studio</span>
+        </button>
+        <button onclick="switchTab('trends')" id="tab-btn-trends" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="trending-up" class="w-3.5 h-3.5 text-sada-green"></i>
+          <span>PyTrends Radar</span>
+          <span class="w-2 h-2 rounded-full bg-sada-green animate-pulse"></span>
+        </button>
+        <button onclick="switchTab('keywords')" id="tab-btn-keywords" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i>
+          <span>Keyword Matrix</span>
+          <span id="header-kw-count" class="px-2 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-[10px]">--</span>
+        </button>
+        <button onclick="switchTab('repository')" id="tab-btn-repository" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="archive" class="w-3.5 h-3.5"></i>
+          <span>Saved Articles</span>
+          <span id="header-blog-count" class="px-2 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950 text-sada-green text-[10px]">0</span>
+        </button>
+      </nav>
+
+      <!-- Engine Status & Theme Toggle -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkCard text-xs font-mono">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-sada-green"></span> 2,000+ Words</span>
+          <span class="text-slate-300 dark:text-slate-700">|</span>
+          <span class="text-sada-green font-semibold">Groq 120B</span>
+        </div>
+
+        <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkCard flex items-center justify-center text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-sada-green transition-all" title="Toggle Theme">
+          <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto w-full px-4 lg:px-8 py-6 flex-1 flex flex-col">
+
+    <!-- TAB 1: CONTENT STUDIO -->
+    <section id="tab-studio" class="tab-content flex flex-col gap-6">
+      
+      <!-- Primary Input & Telemetry Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Keyword Input Console -->
+        <div class="lg:col-span-8 p-6 md:p-7 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-base md:text-lg font-bold flex items-center gap-2">
+                <i data-lucide="cpu" class="w-5 h-5 text-sada-green"></i>
+                <span>SadaHisab Autonomous SEO & Title Studio</span>
+              </h2>
+              <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-sada-green border border-emerald-200 dark:border-emerald-800">
+                Density: ~8/1k minimum · Min 2000 Words
+              </span>
+            </div>
+
+            <label class="block text-xs font-semibold uppercase tracking-wider text-sada-textMutedLight dark:text-sada-textMutedDark mb-2">Target SEO Focus Keyword</label>
+            <div class="relative">
+              <input id="target-keyword" type="text" placeholder="e.g. POS Software for Bakery or Pharmacy Management System in Lahore" 
+                     class="w-full bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder rounded-xl px-4 py-3 pl-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sada-green transition-all placeholder:text-slate-400">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-sada-green"></i>
+            </div>
+
+            <!-- TRENDING DEMAND QUICK-BAR -->
+            <div class="mt-4 p-3.5 rounded-xl bg-slate-50 dark:bg-sada-darkBg/70 border border-sada-lightBorder dark:border-sada-darkBorder">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-sada-green flex items-center gap-1.5">
+                  <i data-lucide="flame" class="w-3.5 h-3.5"></i> Trending Market Search Spikes (Click to Select):
+                </span>
+                <button onclick="switchTab('trends')" class="text-[11px] text-sada-green hover:underline font-semibold flex items-center gap-0.5">
+                  PyTrends Radar &rarr;
+                </button>
+              </div>
+              <div id="studio-quick-trends" class="flex flex-wrap items-center gap-2 text-xs"></div>
+            </div>
+          </div>
+
+          <!-- Studio Action Buttons -->
+          <div class="mt-6 pt-4 border-t border-sada-lightBorder dark:border-sada-darkBorder flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3 text-xs text-sada-textMutedLight dark:text-sada-textMutedDark">
+              <span class="flex items-center gap-1.5"><i data-lucide="git-merge" class="w-3.5 h-3.5 text-sada-green"></i> Mermaid Diagrams</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="image" class="w-3.5 h-3.5 text-emerald-400"></i> Pexels Photos</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="link-2" class="w-3.5 h-3.5 text-sada-green"></i> 2 Verified Links</span>
+            </div>
+
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+              <!-- Step 1: Brainstorm 6 Titles -->
+              <button id="btn-fetch-titles" onclick="fetchTitleOptions()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-sada-green/60 text-sada-green hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                <span id="btn-titles-text">1. Brainstorm 6 Titles</span>
+              </button>
+
+              <button id="btn-open-brief" onclick="openBriefPanel()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-amber-400/70 text-amber-600 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="clipboard-pen-line" class="w-4 h-4"></i>
+                <span>Define Blog Purpose</span>
+              </button>
+
+              <!-- Step 2: Generate 2000+ Word Article -->
+              <button id="generate-btn" onclick="generateArticle()" class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-sada-green hover:bg-sada-greenHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sada transition-all hover:scale-[1.01]">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span id="generate-btn-text">2. Generate 2000+ Word Article</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="blog-brief-panel" class="hidden mt-5 p-5 rounded-xl border border-amber-300/70 dark:border-amber-800/70 bg-amber-50/70 dark:bg-amber-950/20">
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Shape This Article</h3>
+                <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark mt-1">Give the writer a clear purpose and reader context. These answers will guide the article, not appear as headings.</p>
+              </div>
+              <button type="button" onclick="closeBriefPanel()" class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-sada-green" title="Close blog brief">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <label for="blog-purpose" class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1.5">What should this blog accomplish?</label>
+            <textarea id="blog-purpose" rows="2" placeholder="Example: Help pharmacy owners compare options and understand how to reduce expiry-related stock losses." class="w-full bg-white dark:bg-sada-darkBg border border-amber-200 dark:border-amber-900 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"></textarea>
+            <label for="blog-tone" class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mt-4 mb-1.5">What tone should the article use?</label>
+            <select id="blog-tone" class="w-full bg-white dark:bg-sada-darkBg border border-amber-200 dark:border-amber-900 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <option value="professional">Professional and direct - no informal stories or invented anecdotes</option>
+              <option value="conversational">Conversational and approachable - friendly, but still useful</option>
+              <option value="informal">Informal and friendly - relaxed language and relatable examples</option>
+            </select>
+            <div id="brief-questions" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"></div>
+            <div class="flex justify-end mt-4">
+              <button type="button" onclick="saveBlogBrief()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold">Save Article Brief</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Scorecard -->
+        <div class="lg:col-span-4 p-6 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card flex flex-col justify-between">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sada-textMutedLight dark:text-sada-textMutedDark mb-4 flex items-center justify-between">
+              <span>Real-Time Audit Metrics</span>
+              <i data-lucide="gauge" class="w-4 h-4 text-sada-green"></i>
+            </h3>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder">
+                <p class="text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark">Total Word Count</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="metric-words" class="text-2xl font-black">0</span>
+                  <span class="text-[10px] text-sada-textMutedLight dark:text-sada-textMutedDark">words</span>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder">
+                <p class="text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark">Keyword Density</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="metric-density" class="text-2xl font-black text-sada-green">0.0</span>
+                  <span class="text-[10px] text-sada-textMutedLight dark:text-sada-textMutedDark">/ 1k</span>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder">
+                <p class="text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark">Mermaid Diagrams</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="metric-diagrams" class="text-2xl font-black text-emerald-500">0</span>
+                  <span class="text-[10px] text-sada-textMutedLight dark:text-sada-textMutedDark">Flowcharts</span>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder">
+                <p class="text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark">Pexels Photos</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="metric-photos" class="text-2xl font-black text-sada-green">0</span>
+                  <span class="text-[10px] text-sada-textMutedLight dark:text-sada-textMutedDark">Photos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-sada-lightBorder dark:border-sada-darkBorder">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="text-sada-textMutedLight dark:text-sada-textMutedDark">SEO Compliance Status:</span>
+              <span id="metric-health" class="font-bold text-sada-green">Ready</span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div id="metric-health-bar" class="bg-sada-green h-full w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TITLE SELECTION PANEL (DIRECT REFLECTION OF /api/titles/<keyword>) -->
+      <div id="title-selection-box" class="hidden p-6 md:p-7 rounded-2xl border-2 border-sada-green/50 bg-white dark:bg-sada-darkSurface shadow-sada-card transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-sada-lightBorder dark:border-sada-darkBorder">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-sada-green animate-ping"></span>
+              <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white">Choose Your H1 Headline Angle:</h3>
+            </div>
+            <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark mt-0.5">Click any title card below to lock it in as your article's verified H1 header.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="clearTitleSelection()" class="text-[11px] font-semibold text-rose-500 hover:underline px-2 py-1">
+              Reset Selection
+            </button>
+            <span class="text-xs font-mono text-sada-green font-bold bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-800">
+              6 Options Ready
+            </span>
+          </div>
+        </div>
+
+        <div id="title-options-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+      </div>
+
+      <!-- Article Editor & Render Workspace -->
+      <div class="rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface overflow-hidden shadow-sada-card flex flex-col flex-1">
+        <div class="px-6 py-3.5 bg-slate-50 dark:bg-slate-900/60 border-b border-sada-lightBorder dark:border-sada-darkBorder flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button onclick="toggleEditorMode('rendered')" id="btn-view-rendered" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-sada-darkCard text-sada-green shadow-sm border border-sada-lightBorder dark:border-sada-darkBorder">
+              Rendered Article & Visuals
+            </button>
+            <button onclick="toggleEditorMode('raw')" id="btn-view-raw" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-slate-900 dark:hover:text-white">
+              Editable Markdown View
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="copyCurrentContent()" class="px-3.5 py-1.5 rounded-lg border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkCard hover:bg-slate-50 text-xs font-medium flex items-center gap-1.5 transition-colors">
+              <i data-lucide="copy" class="w-3.5 h-3.5 text-sada-green"></i> Copy Markdown
+            </button>
+            <button onclick="downloadCurrentBlog()" class="px-3.5 py-1.5 rounded-lg border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkCard hover:bg-slate-50 text-xs font-medium flex items-center gap-1.5 transition-colors">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-sada-green"></i> Download .md
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-8 min-h-[500px] flex-1 overflow-y-auto">
+          <!-- Loading State -->
+          <div id="generation-loader" class="hidden h-96 flex flex-col items-center justify-center text-center space-y-4">
+            <div class="w-12 h-12 rounded-full border-3 border-emerald-200 dark:border-emerald-900 border-t-sada-green animate-spin"></div>
+            <div>
+              <p id="loader-title" class="text-sm font-bold tracking-tight">Synthesizing 2,000+ words across H1-H3 sections...</p>
+              <p id="loader-desc" class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark mt-1 max-w-sm">Enforcing ~9.5/1k keyword density, building base64 Mermaid diagrams, and querying Pexels.</p>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="studio-empty-state" class="h-96 flex flex-col items-center justify-center text-center text-sada-textMutedLight dark:text-sada-textMutedDark">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-center mb-3">
+              <i data-lucide="receipt" class="w-8 h-8 text-sada-green"></i>
+            </div>
+            <p class="text-base font-bold text-slate-800 dark:text-slate-200">No Post Generated Yet</p>
+            <p class="text-xs max-w-sm mt-1">Pick a keyword from the quick bar, brainstorm titles, or click any breakout term from the Trends Radar.</p>
+          </div>
+
+          <!-- Formatted Content -->
+          <div id="markdown-rendered-view" class="prose-rendered hidden max-w-4xl mx-auto"></div>
+          <!-- Editable Raw Markdown -->
+          <textarea id="markdown-raw-view" oninput="syncRawEdits()" class="hidden w-full h-[550px] font-mono text-xs p-5 bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder rounded-xl focus:outline-none resize-none leading-relaxed"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PYTRENDS RADAR -->
+    <section id="tab-trends" class="tab-content hidden flex flex-col gap-6">
+      <div class="p-6 md:p-7 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card">
+        <div class="max-w-2xl">
+          <h2 class="text-base md:text-lg font-bold flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-5 h-5 text-sada-green"></i>
+            <span>Search Market Radar (Live PyTrends Demand)</span>
+          </h2>
+          <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark mt-1">
+            Queries live Google Trends acceleration data directly from Flask <code>/api/trends/&lt;keyword&gt;</code>. Click <strong>Select & Write</strong> on any query to paste it into the Studio.
+          </p>
+        </div>
+
+        <div class="mt-4 flex gap-3">
+          <div class="relative flex-1">
+            <input id="trend-search-input" type="text" value="POS Software" placeholder="Enter keyword to query trends (e.g. POS Software, Pharmacy Management, FBR Invoicing)..." 
+                   class="w-full bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder rounded-xl px-4 py-2.5 pl-10 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-sada-green">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-sada-green"></i>
+          </div>
+          <button onclick="queryBackendTrends()" class="px-5 py-2.5 rounded-xl bg-sada-green hover:bg-sada-greenHover text-white font-bold text-xs flex items-center gap-2 shadow-sada transition-all">
+            <i data-lucide="compass" class="w-4 h-4"></i> Query PyTrends Live
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart.js Trend Visualizer -->
+      <div class="p-6 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <i data-lucide="bar-chart" class="w-4 h-4 text-sada-green"></i> Search Volume vs Rising Breakout Momentum
+          </h3>
+          <span id="trends-source-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-sada-textMutedDark">Connecting</span>
+        </div>
+        <div class="h-64 w-full">
+          <canvas id="trendsChart"></canvas>
+          <div id="trends-empty-state" class="hidden h-full flex items-center justify-center text-center text-sm text-sada-textMutedLight dark:text-sada-textMutedDark">
+            No sufficient data was available from Google Trends for this keyword.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Rising Breakout Queries -->
+        <div class="p-6 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sada-green flex items-center gap-2">
+              <i data-lucide="flame" class="w-4 h-4"></i> Rising Breakout Queries (+%)
+            </h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-sada-green border border-emerald-300 dark:border-emerald-800">PyTrends Rising</span>
+          </div>
+          <div id="trends-rising-list" class="flex flex-col gap-2.5"></div>
+        </div>
+
+        <!-- Top In-Demand Queries -->
+        <div class="p-6 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <i data-lucide="bar-chart-2" class="w-4 h-4 text-sada-green"></i> Top In-Demand Search Queries
+            </h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">High Volume</span>
+          </div>
+          <div id="trends-top-list" class="flex flex-col gap-2.5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: KEYWORDS MATRIX -->
+    <section id="tab-keywords" class="tab-content hidden flex flex-col gap-6">
+      <div class="p-6 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface shadow-sada-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-base md:text-lg font-bold flex items-center gap-2">
+              <i data-lucide="table" class="w-5 h-5 text-sada-green"></i>
+              <span>SadaHisab Keyword & Conversion Matrix</span>
+            </h2>
+            <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark">Direct URL routing for SadaHisab landing pages and pricing plans</p>
+          </div>
+
+          <div class="relative w-full md:w-64">
+            <input id="matrix-search" oninput="filterKeywords()" type="text" placeholder="Filter keywords..." 
+                   class="w-full bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder rounded-xl px-3.5 py-2 pl-9 text-xs focus:outline-none focus:ring-2 focus:ring-sada-green">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-sada-green"></i>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-sada-lightBorder dark:border-sada-darkBorder overflow-hidden">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-slate-900/60 border-b border-sada-lightBorder dark:border-sada-darkBorder text-sada-textMutedLight dark:text-sada-textMutedDark font-semibold">
+              <tr>
+                <th class="py-3 px-4">#</th>
+                <th class="py-3 px-4">Keyword Phrase & Landing Target</th>
+                <th class="py-3 px-4">Funnel Type</th>
+                <th class="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="keywords-table-body" class="divide-y border-sada-lightBorder dark:divide-sada-darkBorder font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SAVED ARTICLES REPOSITORY -->
+    <section id="tab-repository" class="tab-content hidden flex flex-col gap-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base md:text-lg font-bold flex items-center gap-2">
+            <i data-lucide="archive" class="w-5 h-5 text-sada-green"></i>
+            <span>SadaHisab Content Library</span>
+          </h2>
+          <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark">Articles saved in <code>/generated_blogs</code> and local browser cache</p>
+        </div>
+        <button onclick="requestClearLibrary()" class="px-3.5 py-1.5 rounded-xl border border-rose-300 dark:border-rose-900 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-medium flex items-center gap-1.5 transition-colors">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear Browser Library
+        </button>
+      </div>
+
+      <div id="repository-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+  </main>
+
+  <!-- MODAL FOR CONFIRMATIONS (ZERO BROWSER CONFIRM CALLS) -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-sada-darkSurface border border-sada-lightBorder dark:border-sada-darkBorder p-6 rounded-2xl max-w-sm w-full shadow-2xl space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white">Confirm Action</h4>
+          <p class="text-xs text-sada-textMutedDark" id="confirm-modal-msg">Are you sure you want to proceed?</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="closeConfirmModal(false)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">Cancel</button>
+        <button id="confirm-modal-ok-btn" onclick="closeConfirmModal(true)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white">Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    // SadaHisab Direct Routing
+    const PRICING_URL = "https://sadahisab.com/pricing-plan/";
+    const CONTACT_URL = "https://sadahisab.com/contact-us/";
+
+    const industryLinks = {
+      "Restaurant": "https://sadahisab.com/industries/restaurant-pos-system-software/",
+      "Stationery Shop": "https://sadahisab.com/industries/best-pos-software-for-stationery-shops/",
+      "Auto Spare Parts": "https://sadahisab.com/industries/pos-software-for-auto-spare-parts/",
+      "Electronics Shop": "https://sadahisab.com/industries/pos-software-for-electronics-shop/",
+      "Gym": "https://sadahisab.com/industries/pos-software-for-gym/",
+      "Clothing Store": "https://sadahisab.com/industries/pos-software-for-clothing-store/",
+      "Wholesale Business": "https://sadahisab.com/industries/pos-software-for-wholesale-business/",
+      "Salon": "https://sadahisab.com/industries/pos-software-for-salon/",
+      "Grocery Store": "https://sadahisab.com/industries/pos-software-for-grocery-store/",
+      "Bakery": "https://sadahisab.com/industries/pos-software-for-bakery/",
+    };
+
+    // State Variables
+    let allKeywords = [];
+    let serverFiles = [];
+    let savedBlogs = JSON.parse(localStorage.getItem('sadahisab_blogs') || '[]');
+    let currentTheme = localStorage.getItem('sadahisab_theme') || 'dark';
+    let rawBlogContent = "";
+    let selectedH1Title = "";
+    let blogBrief = { purpose: "", tone: "professional", questions: [] };
+    let cooldownTimer = null;
+    let trendsChartInstance = null;
+    let pendingConfirmAction = null;
+
+    function normalizePreviewMarkdown(content, selectedTitle = "") {
+      const body = (content || "").trim();
+      if (!body) return body;
+
+      const lines = body.split("\n");
+      const firstLine = lines[0].trim();
+
+      const title = selectedTitle.trim();
+      const headingMatch = firstLine.match(/^#{1,6}\s+(.+)$/);
+      if (headingMatch) {
+        const headingText = headingMatch[1].trim();
+        const titleIndex = title ? headingText.toLowerCase().indexOf(title.toLowerCase()) : -1;
+        let headingTitle = title;
+        let introduction;
+        if (titleIndex < 0) {
+          const splitMatch = headingText.search(/\s+(?=(?:face a daily dilemma|built sales channels|is no longer|means balancing|often face|online merchants|retailers who|businesses that))/i);
+          if (splitMatch < 0) return body;
+          headingTitle = headingText.slice(0, splitMatch).replace(/[\s:-]+$/, "");
+          introduction = headingText.slice(splitMatch).trim();
+        } else {
+          introduction = headingText.slice(titleIndex + title.length).replace(/^[\s:-]+/, "");
+        }
+        const sentenceMatch = introduction.match(/^(.+?[.!?])(?:\s+|$)(.*)$/);
+        if (sentenceMatch) introduction = [sentenceMatch[1], sentenceMatch[2]].filter(Boolean).join("\n\n");
+        const rest = lines.slice(1).join("\n").trim();
+        const combined = [introduction, rest].filter(Boolean).join("\n\n");
+        return `# ${headingTitle}${combined ? `\n\n${combined}` : ""}`;
+      }
+
+      if (title) {
+        const titleIndex = firstLine.toLowerCase().indexOf(title.toLowerCase());
+        if (titleIndex >= 0) {
+          let introduction = firstLine.slice(titleIndex + title.length).replace(/^[\s:-]+/, "");
+          const openerIndex = introduction.toLowerCase().indexOf("this is exactly why");
+          if (openerIndex > 0) introduction = introduction.slice(openerIndex);
+          const sentenceMatch = introduction.match(/^(.+?[.!?])(?:\s+|$)(.*)$/);
+          if (sentenceMatch) introduction = [sentenceMatch[1], sentenceMatch[2]].filter(Boolean).join("\n\n");
+          const rest = lines.slice(1).join("\n").trim();
+          introduction = [introduction, rest].filter(Boolean).join("\n\n");
+          return `# ${title}${introduction ? `\n\n${introduction}` : ""}`;
+        }
+      }
+
+      const rest = lines.slice(1).join("\n").trim();
+      return `# ${firstLine}${rest ? `\n\n${rest}` : ""}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initTheme();
+      loadBackendPayloads();
+      lucide.createIcons();
+      updateHeaderCounters();
+      renderKeywordsTable(allKeywords);
+      renderRepositoryCards();
+      renderStudioQuickPicks();
+      queryBackendTrends();
+    });
+
+    function loadBackendPayloads() {
+      try {
+        const filesEl = document.getElementById('server-files-data');
+        if (filesEl && filesEl.textContent.trim()) {
+          serverFiles = JSON.parse(filesEl.textContent);
+        }
+      } catch(e) {
+        serverFiles = [];
+      }
+
+      try {
+        const kwEl = document.getElementById('server-keywords-data');
+        if (kwEl && kwEl.textContent.trim()) {
+          allKeywords = JSON.parse(kwEl.textContent);
+        }
+      } catch(e) {
+        allKeywords = [
+          "Pharmacy Management System in Rawalpindi",
+          "POS Software for Bakery",
+          "FBR Digital Invoicing System Software in Pakistan",
+          "POS Software for Restaurant",
+          "Pharmacy Management System in Lahore"
+        ];
+      }
+    }
+
+    function initTheme() {
+      if (currentTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        document.getElementById('theme-icon').setAttribute('data-lucide', 'sun');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        document.getElementById('theme-icon').setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    function toggleTheme() {
+      currentTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+      localStorage.setItem('sadahisab_theme', currentTheme);
+      initTheme();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-textMutedLight dark:text-sada-textMutedDark hover:text-slate-900 dark:hover:text-white";
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "tab-btn flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sada-green bg-white dark:bg-sada-darkCard shadow-sm";
+      }
+
+      if (tabId === 'repository') renderRepositoryCards();
+    }
+
+    function setKeyword(kw) {
+      const input = document.getElementById('target-keyword');
+      input.value = kw;
+      clearTitleSelection();
+      switchTab('studio');
+      input.focus();
+      input.classList.add('ring-2', 'ring-sada-green');
+      setTimeout(() => input.classList.remove('ring-2', 'ring-sada-green'), 1000);
+      showToast(`Selected "${kw}"`);
+    }
+
+    function updateHeaderCounters() {
+      document.getElementById('header-kw-count').innerText = allKeywords.length;
+      document.getElementById('header-blog-count').innerText = savedBlogs.length + serverFiles.length;
+    }
+
+    function renderStudioQuickPicks() {
+      const studioPills = document.getElementById('studio-quick-trends');
+      if (!studioPills) return;
+      studioPills.innerHTML = "";
+      const picks = [
+        "POS Software for Bakery",
+        "Pharmacy Management System in Rawalpindi",
+        "FBR Digital Invoicing System Software in Pakistan",
+        "POS Software for Restaurant",
+        "POS Software for Grocery Store"
+      ];
+      picks.forEach(term => {
+        const btn = document.createElement('button');
+        btn.className = "px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-sada-green border border-emerald-200 dark:border-emerald-800/40 transition-all font-medium";
+        btn.innerText = term;
+        btn.onclick = () => setKeyword(term);
+        studioPills.appendChild(btn);
+      });
+    }
+
+    function openBriefPanel() {
+      const keyword = document.getElementById('target-keyword').value.trim();
+      if (!keyword) {
+        showToast("Please enter a target keyword first 🌱", "warning");
+        return;
+      }
+
+      const questions = [
+        `What should a reader searching for “${keyword}” understand or decide by the end?`,
+        `Which business, industry, city, authority, or real-world situation should the article focus on?`,
+        `What practical problem or questions should the article answer first?`,
+        `Are there specific features, steps, comparisons, examples, or facts you want included?`
+      ];
+      const container = document.getElementById('brief-questions');
+      container.innerHTML = questions.map((question, index) => `
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200">
+          ${question}
+          <textarea data-brief-question="${index}" rows="2" class="mt-1.5 w-full bg-white dark:bg-sada-darkBg border border-amber-200 dark:border-amber-900 rounded-lg px-3 py-2 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Add useful direction or leave blank"></textarea>
+        </label>
+      `).join('');
+      document.getElementById('blog-purpose').value = blogBrief.purpose;
+      document.getElementById('blog-tone').value = blogBrief.tone || 'professional';
+      document.getElementById('blog-brief-panel').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeBriefPanel() {
+      document.getElementById('blog-brief-panel').classList.add('hidden');
+    }
+
+    function saveBlogBrief() {
+      blogBrief.purpose = document.getElementById('blog-purpose').value.trim();
+      blogBrief.tone = document.getElementById('blog-tone').value;
+      blogBrief.questions = [...document.querySelectorAll('[data-brief-question]')]
+        .map(input => input.value.trim())
+        .filter(Boolean);
+      closeBriefPanel();
+      showToast("Article brief saved. The writer will use it during generation.");
+    }
+
+    /* STEP 1: BRAINSTORM 6 TITLES VIA /api/titles/<keyword> */
+    async function fetchTitleOptions() {
+      const kw = document.getElementById('target-keyword').value.trim();
+      if (!kw) {
+        showToast("Please enter a target keyword first 🌱", "warning");
+        return;
+      }
+
+      const btn = document.getElementById('btn-fetch-titles');
+      const btnText = document.getElementById('btn-titles-text');
+      const box = document.getElementById('title-selection-box');
+      const grid = document.getElementById('title-options-grid');
+
+      btn.disabled = true;
+      btnText.innerText = "Brainstorming 6 Angles...";
+      btn.classList.add('opacity-70');
+
+      try {
+        const res = await fetch(`/api/titles/${encodeURIComponent(kw)}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Title generation failed");
+
+        if (data.titles && data.titles.length > 0) {
+          grid.innerHTML = "";
+          data.titles.forEach((titleText, index) => {
+            const card = document.createElement('div');
+            card.className = "title-option-card p-4 rounded-xl border border-sada-lightBorder dark:border-sada-darkBorder bg-slate-50 dark:bg-sada-darkBg hover:border-sada-green transition-all cursor-pointer flex flex-col justify-between group";
+            card.onclick = () => selectTitleOption(card, titleText);
+            card.innerHTML = `
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-mono font-bold text-sada-green uppercase tracking-wider">Option #${index + 1}</span>
+                  <span class="status-indicator w-3 h-3 rounded-full border-2 border-slate-300 dark:border-slate-700 group-hover:border-sada-green transition-all"></span>
+                </div>
+                <p class="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-3">${titleText}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-sada-lightBorder dark:border-sada-darkBorder flex items-center justify-between text-[10px] text-sada-textMutedLight dark:text-sada-textMutedDark font-medium">
+                <span>Click to lock H1</span>
+                <i data-lucide="check" class="w-3.5 h-3.5 text-sada-green opacity-0 check-icon"></i>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+
+          lucide.createIcons();
+          box.classList.remove('hidden');
+          box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          showToast("6 distinct angles ready! Pick one below ✨");
+        }
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = "1. Brainstorm 6 Titles";
+        btn.classList.remove('opacity-70');
+      }
+    }
+
+    function selectTitleOption(cardElement, titleText) {
+      document.querySelectorAll('.title-option-card').forEach(c => {
+        c.classList.remove('border-sada-green', 'bg-emerald-50/20', 'dark:bg-emerald-950/30', 'ring-2', 'ring-sada-green');
+        const icon = c.querySelector('.check-icon');
+        const indicator = c.querySelector('.status-indicator');
+        if (icon) icon.classList.add('opacity-0');
+        if (indicator) indicator.className = "status-indicator w-3 h-3 rounded-full border-2 border-slate-300 dark:border-slate-700";
+      });
+
+      cardElement.classList.add('border-sada-green', 'bg-emerald-50/20', 'dark:bg-emerald-950/30', 'ring-2', 'ring-sada-green');
+      const activeIcon = cardElement.querySelector('.check-icon');
+      const activeIndicator = cardElement.querySelector('.status-indicator');
+      if (activeIcon) activeIcon.classList.remove('opacity-0');
+      if (activeIndicator) activeIndicator.className = "status-indicator w-3 h-3 rounded-full bg-sada-green border-2 border-sada-green";
+
+      selectedH1Title = titleText;
+      const genBtnText = document.getElementById('generate-btn-text');
+      if (genBtnText) genBtnText.innerText = "2. Generate with Selected H1";
+      showToast(`Selected H1: "${titleText}"`);
+    }
+
+    function clearTitleSelection() {
+      selectedH1Title = "";
+      document.querySelectorAll('.title-option-card').forEach(c => {
+        c.classList.remove('border-sada-green', 'bg-emerald-50/20', 'dark:bg-emerald-950/30', 'ring-2', 'ring-sada-green');
+        const icon = c.querySelector('.check-icon');
+        const indicator = c.querySelector('.status-indicator');
+        if (icon) icon.classList.add('opacity-0');
+        if (indicator) indicator.className = "status-indicator w-3 h-3 rounded-full border-2 border-slate-300 dark:border-slate-700";
+      });
+      const genBtnText = document.getElementById('generate-btn-text');
+      if (genBtnText) genBtnText.innerText = "2. Generate 2000+ Word Article";
+      const box = document.getElementById('title-selection-box');
+      if (box) box.classList.add('hidden');
+    }
+
+    /* STEP 2: GENERATE 2000+ WORD ARTICLE VIA /api/generate/<keyword> */
+    async function generateArticle() {
+      const chosenKeyword = document.getElementById('target-keyword').value.trim();
+      if (!chosenKeyword) {
+        showToast("Please enter or pick a target keyword first 🌱", "warning");
+        return;
+      }
+
+      const generateBtn = document.getElementById('generate-btn');
+      const btnText = document.getElementById('generate-btn-text');
+      const loader = document.getElementById('generation-loader');
+      const emptyState = document.getElementById('studio-empty-state');
+      const renderedView = document.getElementById('markdown-rendered-view');
+      const rawView = document.getElementById('markdown-raw-view');
+
+      generateBtn.disabled = true;
+      btnText.innerText = "Synthesizing 2,000+ Words...";
+      emptyState.classList.add('hidden');
+      renderedView.classList.add('hidden');
+      rawView.classList.add('hidden');
+      loader.classList.remove('hidden');
+
+      const params = new URLSearchParams();
+      if (selectedH1Title) params.set('title', selectedH1Title);
+      if (blogBrief.purpose) params.set('purpose', blogBrief.purpose);
+      if (blogBrief.tone) params.set('tone', blogBrief.tone);
+      if (blogBrief.questions.length) params.set('questions', blogBrief.questions.join('\n'));
+      const query = params.toString();
+      let url = `/api/generate/${encodeURIComponent(chosenKeyword)}${query ? `?${query}` : ''}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (response.status === 429) {
+          triggerCooldown(data.error || "Cooldown in progress. Please wait a few seconds.");
+          throw new Error(data.error);
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Generation error encountered");
+        }
+
+        rawBlogContent = data.content;
+
+        // Telemetry Scorecard updates directly from Flask
+        document.getElementById('metric-words').innerText = data.word_count;
+        document.getElementById('metric-density').innerText = data.rate_per_1000;
+        document.getElementById('metric-diagrams').innerText = data.diagram_count;
+        document.getElementById('metric-photos').innerText = data.photo_count;
+
+        const healthBar = document.getElementById('metric-health-bar');
+        const healthText = document.getElementById('metric-health');
+        if (data.rate_per_1000 >= 8.0 && data.rate_per_1000 <= 10.0) {
+          healthText.innerText = "Natural (8-10/1k Grade A)";
+          healthText.className = "font-bold text-sada-green";
+          healthBar.className = "bg-sada-green h-full w-full transition-all duration-500 rounded-full";
+        } else {
+          healthText.innerText = `Density: ${data.rate_per_1000}/1k`;
+          healthText.className = "font-bold text-amber-500";
+          healthBar.className = "bg-amber-500 h-full w-3/4 transition-all duration-500 rounded-full";
+        }
+
+        // Save into local history
+        const newPost = {
+          id: Date.now(),
+          keyword: data.keyword,
+          filename: data.filename,
+          content: data.content,
+          wordCount: data.word_count,
+          createdAt: new Date().toLocaleDateString() + ' · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          preview: data.content.substring(0, 180) + '...'
+        };
+
+        savedBlogs.unshift(newPost);
+        localStorage.setItem('sadahisab_blogs', JSON.stringify(savedBlogs));
+        updateHeaderCounters();
+
+        const normalizedContent = normalizePreviewMarkdown(data.content, selectedH1Title);
+        renderedView.innerHTML = marked.parse(normalizedContent);
+        rawView.value = normalizedContent;
+        newPost.content = normalizedContent;
+        toggleEditorMode('rendered');
+        showToast("Article successfully synthesized & saved to disk! ✨");
+
+      } catch (err) {
+        showToast(err.message, "error");
+        emptyState.classList.remove('hidden');
+      } finally {
+        if (!cooldownTimer) {
+          generateBtn.disabled = false;
+          btnText.innerText = selectedH1Title ? "2. Generate with Selected H1" : "2. Generate 2000+ Word Article";
+        }
+        loader.classList.add('hidden');
+      }
+    }
+
+    function triggerCooldown(message) {
+      const match = message.match(/(\d+)\s+more\s+seconds/i);
+      let secondsLeft = match ? parseInt(match[1]) : 15;
+
+      const btn = document.getElementById('generate-btn');
+      const btnText = document.getElementById('generate-btn-text');
+      btn.disabled = true;
+
+      clearInterval(cooldownTimer);
+      cooldownTimer = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft <= 0) {
+          clearInterval(cooldownTimer);
+          cooldownTimer = null;
+          btn.disabled = false;
+          btnText.innerText = selectedH1Title ? "2. Generate with Selected H1" : "2. Generate 2000+ Word Article";
+          showToast("Cooldown elapsed. Ready to generate! ⚡");
+        } else {
+          btnText.innerText = `Cooldown (${secondsLeft}s)...`;
+        }
+      }, 1000);
+    }
+
+    /* PYTRENDS RADAR ENGINE */
+    async function queryBackendTrends() {
+      const kw = document.getElementById('trend-search-input').value.trim() || "POS Software";
+      const badge = document.getElementById('trends-source-badge');
+      const risingList = document.getElementById('trends-rising-list');
+      const topList = document.getElementById('trends-top-list');
+      const chart = document.getElementById('trendsChart');
+      const emptyState = document.getElementById('trends-empty-state');
+
+      badge.innerText = "Fetching live PyTrends...";
+      badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-500 animate-pulse";
+
+      try {
+        const res = await fetch(`/api/trends/${encodeURIComponent(kw)}`);
+        const data = await res.json();
+
+        const topLabels = data.top_labels || data.labels || [];
+        const risingLabels = data.rising_labels || data.labels || [];
+        let topData = data.top || [];
+        let risingData = data.rising || [];
+        const hasData = topLabels.length > 0 || risingLabels.length > 0;
+
+        if (!hasData) {
+          if (trendsChartInstance) {
+            trendsChartInstance.destroy();
+            trendsChartInstance = null;
+          }
+          chart.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+          badge.innerText = data.source === "rate-limited" ? "Google Trends rate limit" : "No sufficient data";
+          badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-sada-textMutedDark";
+        } else {
+          chart.classList.remove('hidden');
+          emptyState.classList.add('hidden');
+          badge.innerText = `Live PyTrends: ${data.source}`;
+          badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-sada-green";
+          renderTrendsChart(topLabels.length ? topLabels : risingLabels, topData, risingData);
+        }
+
+        const noDataMessage = data.source === "rate-limited"
+          ? `<p class="text-xs text-amber-600 dark:text-amber-400 py-3">Google Trends temporarily rate-limited this request. Wait a moment and try again.</p>`
+          : `<p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark py-3">No sufficient data was available from Google Trends.</p>`;
+        risingList.innerHTML = risingLabels.length ? "" : noDataMessage;
+        risingLabels.forEach((q, i) => {
+          const div = document.createElement('div');
+          div.className = "flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder text-xs hover:border-sada-green transition-all";
+          div.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-sada-green"></span>
+              <span class="font-medium text-slate-800 dark:text-slate-200">${q}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-100 dark:bg-emerald-950 text-sada-green">+${risingData[i] || 0}%</span>
+            </div>
+            <button onclick="setKeyword('${q.replace(/'/g, "\\'")}')" class="px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-sada-green hover:text-white text-sada-green font-semibold text-[11px] transition-all">
+              Select & Write &rarr;
+            </button>
+          `;
+          risingList.appendChild(div);
+        });
+
+        topList.innerHTML = topLabels.length ? "" : noDataMessage;
+        topLabels.forEach((q, i) => {
+          const div = document.createElement('div');
+          div.className = "flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-sada-darkBg border border-sada-lightBorder dark:border-sada-darkBorder text-xs hover:border-sada-green transition-all";
+          div.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              <span class="font-medium text-slate-800 dark:text-slate-200">${q}</span>
+              <span class="text-[10px] text-sada-textMutedLight font-mono">Vol: ${topData[i] || 100}/100</span>
+            </div>
+            <button onclick="setKeyword('${q.replace(/'/g, "\\'")}')" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-sada-green hover:text-white text-slate-700 dark:text-slate-300 font-semibold text-[11px] transition-all">
+              Select & Write &rarr;
+            </button>
+          `;
+          topList.appendChild(div);
+        });
+
+        lucide.createIcons();
+
+      } catch (err) {
+        if (trendsChartInstance) {
+          trendsChartInstance.destroy();
+          trendsChartInstance = null;
+        }
+        chart.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        risingList.innerHTML = `<p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark py-3">No sufficient data was available from Google Trends.</p>`;
+        topList.innerHTML = `<p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark py-3">No sufficient data was available from Google Trends.</p>`;
+        badge.innerText = "Google Trends unavailable";
+        showToast("Google Trends could not return data for this search.", "warning");
+      }
+    }
+
+    function renderTrendsChart(labels, topData, risingData) {
+      const ctx = document.getElementById('trendsChart').getContext('2d');
+      if (trendsChartInstance) {
+        trendsChartInstance.destroy();
+      }
+
+      trendsChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Search Volume (0-100)',
+              data: topData,
+              backgroundColor: 'rgba(0, 168, 107, 0.75)',
+              borderRadius: 6
+            },
+            {
+              label: 'Relative Rising Spike (%)',
+              data: risingData,
+              backgroundColor: 'rgba(16, 185, 129, 0.35)',
+              borderColor: '#10B981',
+              borderWidth: 1.5,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: { labels: { color: '#94A3B8', font: { family: 'Plus Jakarta Sans', size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function syncRawEdits() {
+      const rawView = document.getElementById('markdown-raw-view');
+      rawBlogContent = rawView.value;
+    }
+
+    function toggleEditorMode(mode) {
+      const renderedView = document.getElementById('markdown-rendered-view');
+      const rawView = document.getElementById('markdown-raw-view');
+      const btnRendered = document.getElementById('btn-view-rendered');
+      const btnRaw = document.getElementById('btn-view-raw');
+
+      if (mode === 'rendered') {
+        if (rawView.value) {
+          rawBlogContent = rawView.value;
+          const normalizedContent = normalizePreviewMarkdown(rawBlogContent);
+          rawBlogContent = normalizedContent;
+          rawView.value = normalizedContent;
+          renderedView.innerHTML = marked.parse(normalizedContent);
+        }
+        renderedView.classList.remove('hidden');
+        rawView.classList.add('hidden');
+        btnRendered.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-sada-darkCard text-sada-green shadow-sm border border-sada-lightBorder dark:border-sada-darkBorder";
+        btnRaw.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-sada-textMutedLight dark:text-sada-textMutedDark";
+      } else {
+        rawView.value = rawBlogContent;
+        renderedView.classList.add('hidden');
+        rawView.classList.remove('hidden');
+        btnRaw.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-sada-darkCard text-sada-green shadow-sm border border-sada-lightBorder dark:border-sada-darkBorder";
+        btnRendered.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-sada-textMutedLight dark:text-sada-textMutedDark";
+      }
+    }
+
+    function copyCurrentContent() {
+      if (!rawBlogContent) return showToast("Nothing to copy yet!", "warning");
+      const ta = document.createElement("textarea");
+      ta.value = rawBlogContent;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast("Copied Markdown to clipboard! 📋");
+    }
+
+    function downloadCurrentBlog() {
+      if (!rawBlogContent) return showToast("Nothing to save yet!", "warning");
+      const kw = document.getElementById('target-keyword').value || "seo_blog";
+      const blob = new Blob([rawBlogContent], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${kw.toLowerCase().replace(/\s+/g, '_')}.md`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function renderKeywordsTable(list) {
+      const tbody = document.getElementById('keywords-table-body');
+      tbody.innerHTML = "";
+
+      list.slice(0, 80).forEach((kw, idx) => {
+        const targetUrl = PRICING_URL;
+        const isIndustry = kw.toLowerCase().includes("for");
+        const badgeColor = isIndustry 
+          ? "bg-emerald-100 dark:bg-emerald-950 text-sada-green border-emerald-300 dark:border-emerald-800" 
+          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
+        const badgeLabel = isIndustry ? "Industry Funnel" : "Pricing Destination";
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-sada-darkBg/60 transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono text-sada-textMutedLight dark:text-sada-textMutedDark">${idx + 1}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-100">
+            <div>${kw}</div>
+            <a href="${targetUrl}" target="_blank" rel="noopener" class="text-[10px] text-sada-green hover:underline font-mono truncate max-w-xs block">${targetUrl}</a>
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold border ${badgeColor}">${badgeLabel}</span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="setKeyword('${kw.replace(/'/g, "\\'")}')" class="px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-sada-green hover:text-white text-sada-green font-semibold transition-all text-[11px]">
+              Use in Studio
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterKeywords() {
+      const search = document.getElementById('matrix-search').value.toLowerCase();
+      const filtered = allKeywords.filter(k => k.toLowerCase().includes(search));
+      renderKeywordsTable(filtered);
+    }
+
+    function renderRepositoryCards() {
+      const grid = document.getElementById('repository-grid');
+      grid.innerHTML = "";
+
+      const allFiles = [...savedBlogs];
+      serverFiles.forEach(fileName => {
+        if (!allFiles.some(b => b.filename === fileName)) {
+          allFiles.push({
+            id: fileName,
+            keyword: fileName.replace(/_/g, ' ').replace('.md', ''),
+            filename: fileName,
+            isServer: true,
+            createdAt: 'On Server Disk',
+            wordCount: '2000+',
+            preview: 'Saved in generated_blogs/ directory on your server...'
+          });
+        }
+      });
+
+      if (allFiles.length === 0) {
+        grid.innerHTML = `<div class="col-span-3 text-center py-12 text-sada-textMutedLight dark:text-sada-textMutedDark">
+          <p class="font-bold">No articles in your library yet.</p>
+        </div>`;
+        return;
+      }
+
+      allFiles.forEach((blog) => {
+        const card = document.createElement('div');
+        card.className = "p-5 rounded-2xl border border-sada-lightBorder dark:border-sada-darkBorder bg-white dark:bg-sada-darkSurface flex flex-col justify-between shadow-sada-card";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between text-[11px] text-sada-textMutedLight dark:text-sada-textMutedDark mb-2">
+              <span>${blog.createdAt}</span>
+              <span class="font-mono text-sada-green font-semibold">${blog.wordCount} words</span>
+            </div>
+            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 line-clamp-2">${blog.keyword}</h3>
+            <p class="text-xs text-sada-textMutedLight dark:text-sada-textMutedDark mt-2 line-clamp-3 leading-relaxed">${blog.preview}</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-sada-lightBorder dark:border-sada-darkBorder flex items-center justify-between">
+            <a href="/blog/${blog.filename}" target="_blank" class="text-xs font-bold text-sada-green hover:underline flex items-center gap-1">Open Reader &rarr;</a>
+            <button onclick="requestDeleteBlog('${blog.filename}')" class="text-xs text-rose-500 hover:text-rose-600 p-1" title="Delete">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function requestDeleteBlog(filename) {
+      document.getElementById('confirm-modal-msg').innerText = "Remove this post from browser tracking?";
+      pendingConfirmAction = () => {
+        savedBlogs = savedBlogs.filter(b => b.filename !== filename);
+        localStorage.setItem('sadahisab_blogs', JSON.stringify(savedBlogs));
+        renderRepositoryCards();
+        updateHeaderCounters();
+        showToast("Article reference removed");
+      };
+      document.getElementById('confirm-modal').classList.remove('hidden');
+      document.getElementById('confirm-modal').classList.add('flex');
+    }
+
+    function requestClearLibrary() {
+      document.getElementById('confirm-modal-msg').innerText = "Clear all articles stored in browser memory?";
+      pendingConfirmAction = () => {
+        savedBlogs = [];
+        localStorage.removeItem('sadahisab_blogs');
+        renderRepositoryCards();
+        updateHeaderCounters();
+        showToast("Browser library cleared 🌱");
+      };
+      document.getElementById('confirm-modal').classList.remove('hidden');
+      document.getElementById('confirm-modal').classList.add('flex');
+    }
+
+    function closeConfirmModal(confirmed) {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      document.getElementById('confirm-modal').classList.remove('flex');
+      if (confirmed && pendingConfirmAction) {
+        pendingConfirmAction();
+      }
+      pendingConfirmAction = null;
+    }
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      let borderClass = type === "warning" 
+        ? "border-amber-400 text-amber-500 bg-amber-50 dark:bg-amber-950/80" 
+        : (type === "error" ? "border-rose-400 text-rose-500 bg-rose-50 dark:bg-rose-950/80" : "border-sada-green text-sada-green bg-white dark:bg-sada-darkCard");
+      toast.className = `px-4 py-3 rounded-xl border shadow-sada flex items-center gap-2.5 text-xs font-semibold transition-all duration-300 transform translate-y-2 pointer-events-auto ${borderClass}`;
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
