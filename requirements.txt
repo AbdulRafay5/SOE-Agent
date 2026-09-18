@@ -4,3 +4,4 @@ requests
 groq
 pytrends
 Markdown
+urllib3<2
