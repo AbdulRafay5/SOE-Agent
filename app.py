@@ -968,7 +968,7 @@ def normalize_trends_keyword(keyword):
 
 
 @lru_cache(maxsize=32)
-def fetch_trends_data(searched_keyword):
+def fetch_trends_data(searched_keyword, timeframe):
     pytrends = TrendReq(
         hl="en-US",
         tz=360,
@@ -985,7 +985,7 @@ def fetch_trends_data(searched_keyword):
             }
         },
     )
-    pytrends.build_payload([searched_keyword], timeframe="today 12-m")
+    pytrends.build_payload([searched_keyword], timeframe=timeframe)
     related = pytrends.related_queries()
 
     query_data = related.get(searched_keyword)
@@ -1022,8 +1022,20 @@ def api_trends(keyword):
     if not searched_keyword:
         return jsonify({"error": "Please enter a search term."}), 400
 
+    timeframe_options = {
+        "7d": "now 7-d",
+        "1m": "today 1-m",
+        "12m": "today 12-m",
+    }
+    timeframe_key = request.args.get("timeframe", "1m")
+    timeframe = timeframe_options.get(timeframe_key)
+    if timeframe is None:
+        return jsonify({"error": "Invalid timeframe. Use 7d, 1m, or 12m."}), 400
+
     try:
-        top_labels, top_values, rising_labels, rising_values = fetch_trends_data(searched_keyword)
+        top_labels, top_values, rising_labels, rising_values = fetch_trends_data(
+            searched_keyword, timeframe
+        )
 
         if not top_labels and not rising_labels:
             fallback = get_fallback_trend_data()
@@ -1033,6 +1045,7 @@ def api_trends(keyword):
         return jsonify({
             "source": "live",
             "searched_keyword": searched_keyword,
+            "timeframe": timeframe_key,
             "top_labels": top_labels,
             "rising_labels": rising_labels,
             "labels": top_labels,
